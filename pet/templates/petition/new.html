@@ -1,0 +1,99 @@
+{% extends "petition/base.html" %}
+{% block title %}
+Woodstock Petitions | New Petition
+{% endblock %}
+
+{% block body %}
+<script>
+    $(document).ready(function () {
+        ClassicEditor
+            .create(document.querySelector('#content'), {
+                toolbar: ['bold', 'italic', '|', 'bulletedList', 'numberedList', '|', 'link'],
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    });
+</script>
+
+<div class="image-background">
+    <div class="bottom-left">
+        <h2>Woodstock Petitons</h2>
+    </div>
+</div>
+
+<div class="container pt-5 mb-5">
+    <div class="row px-3">
+        <a href="javascript: history.back();" class="text-dark"><i class="fas fa-angle-left fa-lg"></i> Go Back</a>
+    </div>
+    {% if message %}
+    <div class="alert alert-danger mt-4 mb-5" role="alert">
+        {{ message }}
+    </div>
+    {% endif %}
+
+    <div class="row mt-3 mb-5">
+        <div class="col text-center">
+            <h3 class="font-weight-light animated fadeInDown">Start a petition</h3>
+        </div>
+    </div>
+
+    <div class="row px-4">
+        <div class="alert alert-secondary" role="alert">
+            <h4 class="alert-heading">Before we start...</h4>
+            <p>There are some rulse we need to follow.</p>
+            <ul>
+                <li>
+                    This site value your opinons. However, if we consider the petition inappropriate, then we will
+                    <b>remove</b>/<b>hide</b> the petition.
+                </li>
+                <li>
+                    A petition that once has been written cannot be <b>erased</b> or <b>edited</b>. This is to prevent
+                    people from changing their views which might effect the supporters.
+                </li>
+                <li>
+                    After a petition has been started, it will be posted for 30 days. STUCO will only respond to
+                    petitons that have more than 100 supporters.
+                </li>
+            </ul>
+            <hr>
+            <p class="mb-0">Now please start your petition to change Woodstock!</p>
+        </div>
+    </div>
+    <div class="row d-block px-4 pb-5">
+        <form action="{% url 'new' %}" method="post">
+            {% csrf_token %}
+            <div class="form-group mt-3">
+                <label for="title">Petition Title</label>
+                <input type="text" class="form-control" id="title" name="title" aria-describedby="titleHelp"
+                    placeholder="What do you want to achieve?" required>
+                <small id="titleHelp" class="form-text text-muted">Keep it short and to the point</small>
+            </div>
+            <div class="form-group mt-3">
+                <label for="category">Petition Category</label>
+                <select class="custom-select" aria-describedby="catHelp" placeholder="Select the category" id="category"
+                    name="category">
+                    <option value="Policy">Policy</option>
+                    <option value="Policy">Academic</option>
+                    <option value="Policy">Food</option>
+                    <option value="Policy">Event</option>
+                    <option value="Policy">Other</option>
+                </select>
+                <small id="catHelp" class="form-text text-muted">What kind of issue are you petitioning on?</small>
+            </div>
+            <div class="form-group mt-3">
+                <label for="content">Petition Content</label>
+                <textarea class="form-control ck-editor__editable" name="content" id="content" name="content" aria-describedby="contentHelp"
+                    placeholder="What do you want to achieve?" required>
+                </textarea>
+                <small id="contentHelp" class="form-text text-muted">Explain the problem you want to solve</small>
+            </div>
+            <input type="hidden" id="first" name="first" value="{{ user.first_name }}">
+            <input type="hidden" id="last" name="last" value="{{ user.last_name }}">
+            <button class="btn btn-sm btn-success btn-block mt-4 py-2 border-0" type="submit" name="button">Create
+                petition</button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

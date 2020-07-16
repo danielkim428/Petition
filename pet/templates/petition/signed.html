@@ -1,0 +1,84 @@
+{% extends "petition/base.html" %}
+{% load static %}
+
+{% block title %}
+Woodstock Petitions | {{ user.first_name }}'s Account
+{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <div class="row px-3">
+        <a href="{% url 'index' %}" class="text-dark"><i class="fas fa-angle-left fa-lg"></i> Go Home</a>
+    </div>
+    <div class="row mt-4 mx-1">
+        <h1>My Account</h1>
+    </div>
+    <div class="row my-3">
+        <div class="col-12 col-lg-3">
+            <div class="card border-0 account-card my-2" onclick="window.location.href = '{% url 'account' %}'">
+                <div class="card-body py-2">
+                    <i class="fas fa-user-circle"></i> My details
+                </div>
+            </div>
+            <div class="card border-0 my-2 account-card card-active"
+                onclick="window.location.href = '{% url 'signed' %}'">
+                <div class="card-body py-2">
+                    <i class="fas fa-signature"></i> Signed petitions
+                </div>
+            </div>
+            <div class="card border-0 my-2 account-card" onclick="window.location.href = '{% url 'mypetitions' %}'">
+                <div class="card-body py-2">
+                    <i class="fas fa-file-contract"></i> My petitions
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-9">
+            <div class="border rounded shadow-sm">
+                <div class="p-4">
+                    <h2>Signed petitions</h2>
+                    <p class="mt-4"><b>Petitions that were signed by {{ user.username }}</b></p>
+                    <table class="table d-none d-lg-block">
+                        <thead>
+                            <tr class="text-center">
+                                <th scope="col" style="width: 5%">#</th>
+                                <th scope="col" style="width: 10%">Category</th>
+                                <th scope="col" style="width: 60%">Title</th>
+                                <th scope="col" style="width: 15%">End date</th>
+                                <th scope="col" style="width: 10%">Supporters</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentTable">
+                            {% for sign in signed %}
+                            <tr class="table-tr" onclick="window.location.href = '{% url 'post' sign.id %}'"
+                                style="cursor:pointer;">
+                                <th scope="row" class="text-muted">{{ sign.id }}</th>
+                                <td class="text-success font-weight-bold">{{ sign.category }}</td>
+                                <td><a href="{% url 'post' sign.id %}" class="text-dark">{{ sign.title }}</a></td>
+                                <td class="text-center">{{ sign.end.day }}.{{ sign.end.month }}.{{ sign.end.year }}</td>
+                                <td class="text-center">{{ sign.num_supporters }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% for sign in signed %}
+                    <div class="card border-bottom-0 border-left-0 border-right-0 border-top d-lg-none"
+                        onclick="window.location.href = '{% url 'post' sign.id %}'" style="cursor: pointer;"
+                        id="cardbody">
+                        <div class="card-body px-2">
+                            <p class="card-text text-success mb-1">{{ sign.category }}</p>
+                            <p class="card-text mb-1">{{ sign.title }}</p>
+                            <div class="d-flex justify-content-between">
+                                <p class="card-text text-secondary my-0">
+                                    {{ sign.end.day }}.{{ sign.end.month }}.{{ sign.end.year }}</p>
+                                <a href="#" class="card-link text-success my-0">{{ sign.num_supporters }} Signed</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

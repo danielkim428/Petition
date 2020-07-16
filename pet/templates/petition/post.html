@@ -1,0 +1,109 @@
+{% extends "petition/base.html" %}
+{% load static %}
+
+{% block title %}
+Woodstock Petitions | #{{ post.id }} Petition
+{% endblock %}
+
+{% block body %}
+<div class="image-background">
+    <div class="bottom-left">
+        <h2>Woodstock Petitons</h2>
+    </div>
+</div>
+
+<div class="row border-bottom p-0 m-0" style="cursor: pointer;">
+    <div class="col-4 tab text-center py-2 px-0 m-0 d-none d-lg-block"
+        onclick="window.location.href = '{% url 'index' %}'">
+        <p class="my-2 border-right">Petitions by Categories</p>
+    </div>
+    <div class="col-4 tab text-center py-2 px-0 m-0 d-none d-lg-block"
+        onclick="window.location.href = '{% url 'index' %}'">
+        <p class="my-2">Finished Petitions</p>
+    </div>
+    <div class="col-4 tab text-center py-2 px-0 m-0 d-none d-lg-block"
+        onclick="window.location.href = '{% url 'index' %}'">
+        <p class="my-2 border-left">Answered Petitions</p>
+    </div>
+    <div class="col-4 tab text-center py-2 px-0 m-0 tab-active d-lg-none"
+        onclick="window.location.href = '{% url 'index' %}'">
+        <p class="my-2 border-right">Categories</p>
+    </div>
+    <div class="col-4 tab text-center py-2 px-0 m-0 d-lg-none" onclick="window.location.href = '{% url 'index' %}'">
+        <p class="my-2">Finished</p>
+    </div>
+    <div class="col-4 tab text-center py-2 px-0 m-0 d-lg-none" onclick="window.location.href = '{% url 'index' %}'">
+        <p class="my-2 border-left">Answered</p>
+    </div>
+</div>
+
+<div class="container py-4">
+    <div class="row px-3">
+        <a href="{% url 'index' %}" class="text-dark"><i class="fas fa-angle-left fa-lg"></i> Go Home</a>
+    </div>
+    <div class="row my-4 mx-1">
+        <div class="col-12 col-lg-8 border rounded-left pt-5 pb-3 px-3">
+            <h5 class="font-weight-light text-center">-Ongoing Petition-</h5>
+            <h2 class="font-weight-bold text-center mt-3">{{ post.title }}</h2>
+            <h5 class="font-weight-bold text-center mt-4">Supporters: [ <span
+                    class="text-success">{{ post.num_supporters }}</span> Signed ]</h5>
+            <div class="row rounded border mt-5 mb-4 mx-2" style="background-color: #F6F6F6;">
+                <div class="col-6 col-lg-3 mt-3 text-center"><small>
+                        <p><b>Category</b> {{ post.category }}</p>
+                    </small></div>
+                <div class="col-6 col-lg-3 mt-3 text-center"><small>
+                        <p><b>Start Date</b> {{ post.start.day }}.{{ post.start.month }}.{{ post.start.year }}</p>
+                    </small></div>
+                <div class="col-6 col-lg-3 mt-3 text-center"><small>
+                        <p><b>End Date</b> {{ post.end.day }}.{{ post.end.month }}.{{ post.end.year }}</p>
+                    </small></div>
+                <div class="col-6 col-lg-3 mt-3 text-center"><small>
+                        <p><b>Author</b> {{ post.authorFirst }} {{ post.authorLast }}</p>
+                    </small></div>
+            </div>
+            <hr>
+            <div class="mt-4">{{ post.content|safe  }}</div>
+        </div>
+        <div class="col-12 col-lg-4 border rounded-right">
+            <div class="text-left mt-4">
+                <p><b>{{ post.num_supporters }} have signed.</b> Let's get to 100!</p>
+                <div class="progress mt-n2">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar"
+                        style="width: {{ post.num_supporters }}%" aria-valuenow="{{ post.num_supporters }}"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <form action="{% url 'sign' post.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="mt-3 btn btn-success btn-lg btn-block" aria-describedby="submitHelp"><i
+                            class="fas fa-pen-fancy"></i>
+                        Sign
+                        this petition</button>
+                    <small id="submitHelp" class="form-text text-muted mt-2">By signing, you accept STUCO’s <a
+                            href="">Terms of Service</a> and <a href="">Privacy Policy</a>.</small>
+                </form>
+            </div>
+            <hr>
+            <div>
+                <p class="mb-2"><b>Top 5 Petitions</b></p>
+                <ol>
+                    {% for post in posts|dictsortreversed:"num_supporters"|slice:":5" %}
+                    <li><a href="{% url 'post' post.id %}" class="text-dark">{{ post.title|truncatewords:4 }}</a></li>
+                    {% endfor %}
+                </ol>
+            </div>
+            <hr>
+            <div>
+                <p class="mb-2"><b>Recent Petitions</b></p>
+                <ol>
+                    {% for post in posts|slice:":5" %}
+                    <li><a href="{% url 'post' post.id %}" class="text-dark">{{ post.title|truncatewords:4 }}</a></li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

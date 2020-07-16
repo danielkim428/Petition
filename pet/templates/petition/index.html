@@ -1,0 +1,162 @@
+{% extends "petition/base.html" %}
+{% load static %}
+
+{% block title %}
+Woodstock Petitions | Index
+{% endblock %}
+
+{% block body %}
+
+<div class="image-background">
+  <div class="bottom-left">
+    <h2>Woodstock Petitons</h2>
+  </div>
+</div>
+
+<div class="row border-bottom p-0 m-0" style="cursor: pointer;">
+  <div class="col-4 tab text-center py-2 px-0 m-0 tab-active d-none d-lg-block"
+    onclick="window.location.href = '{% url 'index' %}'">
+    <p class="my-2 border-right">Petitions by Categories</p>
+  </div>
+  <div class="col-4 tab text-center py-2 px-0 m-0 d-none d-lg-block"
+    onclick="window.location.href = '{% url 'index' %}'">
+    <p class="my-2">Finished Petitions</p>
+  </div>
+  <div class="col-4 tab text-center py-2 px-0 m-0 d-none d-lg-block"
+    onclick="window.location.href = '{% url 'index' %}'">
+    <p class="my-2 border-left">Answered Petitions</p>
+  </div>
+  <div class="col-4 tab text-center py-2 px-0 m-0 tab-active d-lg-none"
+    onclick="window.location.href = '{% url 'index' %}'">
+    <p class="my-2 border-right">Categories</p>
+  </div>
+  <div class="col-4 tab text-center py-2 px-0 m-0 d-lg-none" onclick="window.location.href = '{% url 'index' %}'">
+    <p class="my-2">Finished</p>
+  </div>
+  <div class="col-4 tab text-center py-2 px-0 m-0 d-lg-none" onclick="window.location.href = '{% url 'index' %}'">
+    <p class="my-2 border-left">Answered</p>
+  </div>
+</div>
+
+
+<div class="container py-3">
+  <div class="card d-block border-0">
+    <div class="card-body">
+      <h4 class="card-title animated fadeInDown">Sign Petitions</h4>
+      <p class="card-text">We believe that your voice matters. If there are more than 100 signatures in 30 days, STUCO
+        will anwser the petitions.</p>
+      <a href="{% url 'new' %}" class="btn btn-success">Start a petition</a>
+    </div>
+  </div>
+  <hr>
+
+  <div class="row">
+    <h4 class="d-block text-left mb-1 p-2 pl-3 font-weight-light animated fadeInDown">Top 5 Petitions</h4>
+  </div>
+  <table class="table d-none d-lg-block">
+    <thead>
+      <tr class="text-center">
+        <th scope="col" style="width: 5%">#</th>
+        <th scope="col" style="width: 10%">Category</th>
+        <th scope="col" style="width: 60%">Title</th>
+        <th scope="col" style="width: 15%">End date</th>
+        <th scope="col" style="width: 10%">Supporters</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for post in posts|dictsortreversed:"num_supporters"|slice:":5" %}
+      <tr class="table-tr" onclick="window.location.href = '{% url 'post' post.id %}'" style="cursor:pointer;">
+        <th scope="row" class="text-muted">{{ post.id }}</th>
+        <td class="text-success font-weight-bold">{{ post.category }}</td>
+        <td><a href="{% url 'post' post.id %}" class="text-dark">{{ post.title }}</a></td>
+        <td class="text-center">{{ post.end.day }}.{{ post.end.month }}.{{ post.end.year }}</td>
+        <td class="text-center">{{ post.num_supporters }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% for post in posts|dictsortreversed:"num_supporters"|slice:":5" %}
+  <div class="card border-bottom-0 border-left-0 border-right-0 border-top d-lg-none"
+    onclick="window.location.href = '{% url 'post' post.id %}'" style="cursor: pointer;">
+    <div class="card-body px-2">
+      <p class="card-text text-success mb-1">{{ post.category }}</p>
+      <p class="card-text mb-1">{{ post.title }}</p>
+      <div class="d-flex justify-content-between">
+        <p class="card-text text-secondary my-0">{{ post.end.day }}.{{ post.end.month }}.{{ post.end.year }}</p>
+        <a href="#" class="card-link text-success my-0">{{ post.num_supporters }} Signed</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+
+  <div class="row">
+    <h4 class="d-block text-left mb-0 p-2 pl-3 font-weight-light animated fadeInDown">Recent Petitions</h4>
+    <div class="d-flex py-2">
+      <select class="custom-select custom-select-sm" id="select">
+        <option selected value="">All</option>
+        <option value="Policy">Policy</option>
+        <option value="Academic">Academic</option>
+        <option value="Food">Food</option>
+        <option value="Event">Event</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <!--<a href="{% url 'index' %}" class="d-block ml-auto mr-auto mr-lg-5 text-success text-right pt-3">See more</a>-->
+  </div>
+
+  <table class="table d-none d-lg-block">
+    <thead>
+      <tr class="text-center">
+        <th scope="col" style="width: 5%">#</th>
+        <th scope="col" style="width: 10%">Category</th>
+        <th scope="col" style="width: 60%">Title</th>
+        <th scope="col" style="width: 15%">End date</th>
+        <th scope="col" style="width: 10%">Supporters</th>
+      </tr>
+    </thead>
+    <tbody id="recentTable">
+      {% for post in posts %}
+      <tr class="table-tr" onclick="window.location.href = '{% url 'post' post.id %}'" style="cursor:pointer;">
+        <th scope="row" class="text-muted">{{ post.id }}</th>
+        <td class="text-success font-weight-bold">{{ post.category }}</td>
+        <td><a href="{% url 'post' post.id %}" class="text-dark">{{ post.title }}</a></td>
+        <td class="text-center">{{ post.end.day }}.{{ post.end.month }}.{{ post.end.year }}</td>
+        <td class="text-center">{{ post.num_supporters }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+<div id="recentCard">
+  {% for post in posts %}
+  <div class="card border-bottom-0 border-left-0 border-right-0 border-top d-lg-none"
+    onclick="window.location.href = '{% url 'post' post.id %}'" style="cursor: pointer;" id="cardbody">
+    <div class="card-body px-2">
+      <p class="card-text text-success mb-1">{{ post.category }}</p>
+      <p class="card-text mb-1">{{ post.title }}</p>
+      <div class="d-flex justify-content-between">
+        <p class="card-text text-secondary my-0">{{ post.end.day }}.{{ post.end.month }}.{{ post.end.year }}</p>
+        <a href="#" class="card-link text-success my-0">{{ post.num_supporters }} Signed</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+</div>
+<script>
+$(document).ready(function(){
+  $("#select").on("change", function() {
+    var value = $(this).val().toLowerCase();
+    $("#recentCard #cardbody").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+    $("#recentTable tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+{% endblock %}
