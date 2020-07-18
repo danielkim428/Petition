@@ -3,7 +3,7 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-  
+
     <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
       <ul class="navbar-nav ml-auto mt-2 mt-lg-0 text-center">
         <li class="nav-item active">
@@ -11,7 +11,7 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'new' %}">Start a petition</a>
-      </li>
+        </li>
         <li class="nav-item">
             <a class="nav-link" href="{% url 'about' %}">About</a>
         </li>
@@ -36,6 +36,6 @@
             <button class="btn btn-outline-success btn-block my-2 my-sm-0" type="submit" onclick="window.location.href = '{% url 'register' %}'">Sign up</button>
         </li>
         {% endif %}
-      </ul> 
+      </ul>
     </div>
   </nav>
