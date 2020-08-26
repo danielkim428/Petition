@@ -42,9 +42,10 @@ Woodstock Petitions | #{{ post.id }} Petition
         <a href="{% url 'index' %}" class="text-dark"><i class="fas fa-angle-left fa-lg"></i> Go Home</a>
     </div>
     <div class="row my-4 mx-1">
-        <div class="col-12 col-lg-8 border rounded-left pt-5 pb-3 px-3">
+        <div class="col-12 col-lg-8 border rounded-left pt-4 pb-3 px-3">
             <h5 class="font-weight-light text-center">-Ongoing Petition-</h5>
-            <h2 class="font-weight-bold text-center mt-3">{{ post.title }}</h2>
+            <h2 class="font-weight-bold text-center mt-3 d-none d-md-block">{{ post.title }}</h2>
+            <h4 class="font-weight-bold text-center mt-3 d-md-none">{{ post.title }}</h4>
             <h5 class="font-weight-bold text-center mt-4">Supporters: [ <span
                     class="text-success">{{ post.num_supporters }}</span> Signed ]</h5>
             <div class="row rounded border mt-5 mb-4 mx-2" style="background-color: #F6F6F6;">
