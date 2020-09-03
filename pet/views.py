@@ -9,6 +9,19 @@ from django.urls import reverse
 # Create your views here
 from .models import *
 
+def init(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+    try:
+        exist = Supporter.objects.get(first_name=request.user.first_name, last_name=request.user.last_name)
+        return HttpResponseRedirect(reverse('index'))
+    except:
+        if (request.user.email.split("@")[1] == "woodstock.ac.in"):
+            new_supporter = Supporter(first_name=request.user.first_name, last_name=request.user.last_name)
+            new_supporter.save()
+            return HttpResponseRedirect(reverse('index'))
+        return render(request, 'petition/login.html', {"message": "Please sign in with your woodstock account."})
+
 def about(request):
     return render(request, "petition/about.html")
 
@@ -102,7 +115,7 @@ def register(request):
 
             new_supporter = Supporter(first_name=first_name, last_name=last_name)
             new_supporter.save()
-            
+
         except IntegrityError:
             return render(request, 'petition/register.html', {"message": "User already exists"})
         except:
@@ -161,12 +174,12 @@ def changeaccount(request):
             if not (password == ""):
                 change_user.set_password(password)
             change_user.save()
-            
+
         except IntegrityError:
             return render(request, 'petition/account.html', {"message": "Username already exists"})
         except:
             return render(request, 'petition/account.html', {"message": "Invalid credentials."})
-    
+
     return HttpResponseRedirect(reverse('account'))
 
 def new(request):
@@ -181,7 +194,7 @@ def new(request):
         content = request.POST['content']
         if not title:
             return render(request, 'petition/new.html', {"message": "Please fill in the title"})
-        
+
         if not category:
             return render(request, 'petition/new.html', {"message": "Please select the category"})
 
@@ -190,7 +203,7 @@ def new(request):
 
         try:
             new_post = Post(title=title, category=category, content=content, authorFirst=first, authorLast=last)
-            new_post.save() 
+            new_post.save()
         except:
             return render(request, 'petition/new.html', {"message": "Please try it again"})
 

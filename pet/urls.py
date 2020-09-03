@@ -14,4 +14,5 @@ urlpatterns = [
     path("account/signed", views.signed, name="signed"),
     path("account/mypetition", views.mypetition, name="mypetitions"),
     path("account/changeaccount", views.changeaccount, name="changeaccount"),
+    path("init", views.init, name="init"),
 ]
