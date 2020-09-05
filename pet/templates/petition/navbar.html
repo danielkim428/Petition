@@ -5,7 +5,7 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-      <ul class="navbar-nav ml-auto mt-2 mt-lg-0 text-center">
+      <ul class="navbar-nav ml-auto mt-2 mt-lg-0 text-left">
         <li class="nav-item active">
           <a class="nav-link" href="{% url 'index' %}">Home</a>
         </li>
@@ -15,6 +15,11 @@
         <li class="nav-item">
             <a class="nav-link" href="{% url 'about' %}">About</a>
         </li>
+        {% if request.user.is_staff %}
+        <li class="nav-item">
+            <a class="nav-link text-danger" href="{% url 'stuco' %}">STUCO ADMIN</a>
+        </li>
+        {% endif %}
         {% if request.user.is_authenticated %}
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

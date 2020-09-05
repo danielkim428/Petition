@@ -20,7 +20,7 @@ Woodstock Petitions | Index
   </div>
   <div class="col-4 tab text-center py-2 px-0 m-0 d-none d-lg-block"
     onclick="window.location.href = '{% url 'index' %}'">
-    <p class="my-2">Finished Petitions</p>
+    <p class="my-2">Closed Petitions</p>
   </div>
   <div class="col-4 tab text-center py-2 px-0 m-0 d-none d-lg-block"
     onclick="window.location.href = '{% url 'index' %}'">
@@ -31,7 +31,7 @@ Woodstock Petitions | Index
     <p class="my-2 border-right">Categories</p>
   </div>
   <div class="col-4 tab text-center py-2 px-0 m-0 d-lg-none" onclick="window.location.href = '{% url 'index' %}'">
-    <p class="my-2">Finished</p>
+    <p class="my-2">Closed</p>
   </div>
   <div class="col-4 tab text-center py-2 px-0 m-0 d-lg-none" onclick="window.location.href = '{% url 'index' %}'">
     <p class="my-2 border-left">Answered</p>
@@ -67,7 +67,7 @@ Woodstock Petitions | Index
       {% for post in posts|dictsortreversed:"num_supporters"|slice:":5" %}
       <tr class="table-tr" onclick="window.location.href = '{% url 'post' post.id %}'" style="cursor:pointer;">
         <th scope="row" class="text-muted">{{ post.id }}</th>
-        <td class="text-success font-weight-bold">{{ post.category }}</td>
+        <td class="text-success">{{ post.category }}</td>
         <td><a href="{% url 'post' post.id %}" class="text-dark">{{ post.title }}</a></td>
         <td class="text-center">{{ post.end.day }}.{{ post.end.month }}.{{ post.end.year }}</td>
         <td class="text-center">{{ post.num_supporters }}</td>
@@ -77,14 +77,19 @@ Woodstock Petitions | Index
   </table>
 
   {% for post in posts|dictsortreversed:"num_supporters"|slice:":5" %}
-  <div class="card border-bottom-0 border-left-0 border-right-0 border-top d-lg-none"
+  <div class="card mb-3 shadow d-block d-lg-none"
     onclick="window.location.href = '{% url 'post' post.id %}'" style="cursor: pointer;">
-    <div class="card-body px-2">
+    <div class="card-body px-3">
       <p class="card-text text-success mb-1">{{ post.category }}</p>
       <p class="card-text mb-1">{{ post.title }}</p>
       <div class="d-flex justify-content-between">
         <p class="card-text text-secondary my-0">{{ post.end.day }}.{{ post.end.month }}.{{ post.end.year }}</p>
         <a href="#" class="card-link text-success my-0">{{ post.num_supporters }} Signed</a>
+      </div>
+      <div class="progress mt-3 mb-n2">
+          <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar"
+              style="width: {{ post.num_supporters }}%" aria-valuenow="{{ post.num_supporters }}"
+              aria-valuemin="0" aria-valuemax="100"></div>
       </div>
     </div>
   </div>
@@ -120,7 +125,7 @@ Woodstock Petitions | Index
       {% for post in posts %}
       <tr class="table-tr" onclick="window.location.href = '{% url 'post' post.id %}'" style="cursor:pointer;">
         <th scope="row" class="text-muted">{{ post.id }}</th>
-        <td class="text-success font-weight-bold">{{ post.category }}</td>
+        <td class="text-success">{{ post.category }}</td>
         <td><a href="{% url 'post' post.id %}" class="text-dark">{{ post.title }}</a></td>
         <td class="text-center">{{ post.end.day }}.{{ post.end.month }}.{{ post.end.year }}</td>
         <td class="text-center">{{ post.num_supporters }}</td>
@@ -131,14 +136,19 @@ Woodstock Petitions | Index
 
 <div id="recentCard">
   {% for post in posts %}
-  <div class="card border-bottom-0 border-left-0 border-right-0 border-top d-lg-none"
+  <div class="card mb-3 shadow d-lg-none"
     onclick="window.location.href = '{% url 'post' post.id %}'" style="cursor: pointer;" id="cardbody">
-    <div class="card-body px-2">
+    <div class="card-body px-3">
       <p class="card-text text-success mb-1">{{ post.category }}</p>
       <p class="card-text mb-1">{{ post.title }}</p>
       <div class="d-flex justify-content-between">
         <p class="card-text text-secondary my-0">{{ post.end.day }}.{{ post.end.month }}.{{ post.end.year }}</p>
         <a href="#" class="card-link text-success my-0">{{ post.num_supporters }} Signed</a>
+      </div>
+      <div class="progress mt-3 mb-n2">
+          <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar"
+              style="width: {{ post.num_supporters }}%" aria-valuenow="{{ post.num_supporters }}"
+              aria-valuemin="0" aria-valuemax="100"></div>
       </div>
     </div>
   </div>

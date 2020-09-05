@@ -14,11 +14,13 @@ class Post(models.Model):
         ('Other', 'Other'),
     ]
     category = models.CharField(max_length=20, choices = CATEGORY, null=True, blank=True)
-    content = models.CharField(max_length=3500)
+    content = models.CharField(max_length=20000)
     authorFirst = models.CharField(max_length=20, blank=True)
     authorLast = models.CharField(max_length=20, blank=True)
     start = models.DateField(default=date)
     end = models.DateField(default=date + relativedelta(months=1))
+    state = models.IntegerField(default=0)
+    stuco = models.CharField(max_length=50, blank=True, default="")
 
     def __str__(self):
         return f"{self.title} ({self.category})"

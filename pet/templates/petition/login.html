@@ -34,8 +34,8 @@ Woodstock Petitions | Login
                         </div>
                         <button type="submit" value="Login" class="mt-3 btn btn-success btn-block">LOGIN</button>
                     </form>
-                    <form class="mt-n1" action="{% provider_login_url 'google' %}">
-                        <button type="submit" value="Login" class="mt-3 btn btn-light btn-block shadow-sm" style="background-color: white;"> Sign in with Google</button>
+                    <form action="{% provider_login_url 'google' %}">
+                        <button type="submit" value="Login" class="mt-2 btn btn-light btn-block shadow-sm" style="background-color: white;"><img src="{% static 'petition/g-logo.png' %}" alt="Google" style="height:25px !important; width:25px !important;"> Sign in with Google</button>
                     </form>
                     <hr>
                     <p class="mt-4 text-dark text-center">Not a member? <a href="{% url 'register' %}">Sign up now</a>.

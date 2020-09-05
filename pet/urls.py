@@ -15,4 +15,7 @@ urlpatterns = [
     path("account/mypetition", views.mypetition, name="mypetitions"),
     path("account/changeaccount", views.changeaccount, name="changeaccount"),
     path("init", views.init, name="init"),
+    path("stuco", views.stuco, name="stuco"),
+    path("stuco/ajax_stuco", views.ajax_stuco, name="ajax_stuco"),
+    path("stuco/loadmore", views.loadmore, name="loadmore"),
 ]
