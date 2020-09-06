@@ -18,4 +18,6 @@ urlpatterns = [
     path("stuco", views.stuco, name="stuco"),
     path("stuco/ajax_stuco", views.ajax_stuco, name="ajax_stuco"),
     path("stuco/loadmore", views.loadmore, name="loadmore"),
+    path("stuco/disloadmore", views.disloadmore, name="disloadmore"),
+    path("indexPage", views.indexPage, name="indexPage"),
 ]

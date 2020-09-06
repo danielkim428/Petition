@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Woodstock Petitions | #{{ post.id }} Petition
+Woodstock Petitions | #{{ post.id }} {{ post.title }}
 {% endblock %}
 
 {% block body %}
@@ -43,9 +43,7 @@ Woodstock Petitions | #{{ post.id }} Petition
     </div>
     <div class="row my-4 mx-0 mx-lg-1">
         <div class="col-12 col-lg-8 border rounded-left pt-4 pb-3 px-4">
-            {% if post.state == 1 %}
-            <h5 class="font-weight-light text-center">- Ongoing Petition -</h5>
-            {% endif %}
+            <h5 class="font-weight-light text-center">- {% if post.state == 0 %}Pending{% endif %}{% if post.state == 1 %}Open{% endif %}{% if post.state == 2 %}Closed{% endif %}{% if post.state == 3 %}Answered{% endif %}{% if post.state == 6 %}<span class="text-danger">Disapproved</span>{% endif %} -</h5>
             <h2 class="font-weight-bold text-center mt-3 d-none d-md-block">{{ post.title }}</h2>
             <h4 class="font-weight-bold text-center mt-3 d-md-none">{{ post.title }}</h4>
             <h5 class="font-weight-bold text-center mt-4">Supporters: [ <span
@@ -75,6 +73,7 @@ Woodstock Petitions | #{{ post.id }} Petition
                         style="width: {{ post.num_supporters }}%" aria-valuenow="{{ post.num_supporters }}"
                         aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
+                {% if signed == "false" %}
                 <form id="theform" action="{% url 'sign' post.id %}" method="post">
                     {% csrf_token %}
                     <button type="submit" class="mt-3 btn btn-success btn-lg btn-block d-none d-lg-block" aria-describedby="submitHelp"><i
@@ -84,6 +83,18 @@ Woodstock Petitions | #{{ post.id }} Petition
                     <small id="submitHelp" class="form-text text-muted mt-2">By signing, you accept STUCO’s <a
                             href="">Terms of Service</a> and <a href="">Privacy Policy</a>.</small>
                 </form>
+                {% endif %}
+                {% if signed == "true" %}
+                <form id="theform" action="{% url 'sign' post.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="mt-3 btn btn-success btn-lg btn-block d-none d-lg-block" aria-describedby="submitHelp" disabled><i
+                            class="fas fa-pen-fancy"></i> Signed</button>
+                    <button type="submit" class="mt-3 btn btn-success btn-lg btn-block d-block d-lg-none fixed-bottom rounded-0" aria-describedby="submitHelp" id="btnsubmit" disabled><i
+                            class="fas fa-pen-fancy"></i> Signed</button>
+                    <small id="submitHelp" class="form-text text-muted mt-2">By signing, you accept STUCO’s <a
+                            href="">Terms of Service</a> and <a href="">Privacy Policy</a>.</small>
+                </form>
+                {% endif %}
             </div>
             <hr>
             <div>
@@ -103,6 +114,22 @@ Woodstock Petitions | #{{ post.id }} Petition
                     {% endfor %}
                 </ol>
             </div>
+            {% if request.user.is_staff %}
+            <hr>
+            <div>
+                <p class="text-danger mb-2"><b>STUCO Admin</b></p>
+                {% if post.state > 0 %}
+                <p>This decision was made by {{ post.stuco }}</p>
+                {% endif %}
+                {% if post.state == 1 or post.state == 2 %}
+                <form action="{% url 'post' post.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ post.id }}">
+                    <button type="submit" name="button" class="btn btn-danger btn-block">Remove</button>
+                </form>
+                {% endif %}
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

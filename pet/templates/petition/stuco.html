@@ -21,7 +21,7 @@ Woodstock Petitions | Index
     {% endif %}
 <div class="row">
     <div class="col-12 col-lg-7">
-        <h4 class="d-block text-left mb-1 p-2 pl-3 font-weight-light animated fadeInDown">Pending Petitions</h4>
+        <h4 class="text-left mb-1 p-2 pl-3 font-weight-light animated fadeInDown d-none d-lg-block">Pending Petitions</h4>
         <table class="table d-none d-lg-block mx-4 mt-3">
           <thead>
             <tr class="text-center">
@@ -35,14 +35,14 @@ Woodstock Petitions | Index
           </thead>
           <tbody id="pending">
             {% for post in yet|slice:":5" %}
-            <tr class="table-tr" style="cursor:pointer;">
+            <tr class="table-tr" style="cursor:pointer;" onclick="ajax({{ post.id }});">
               <th scope="row" class="text-muted">{{ post.id }}</th>
               <td class="text-success">{{ post.category }}</td>
-              <td><a href="" class="text-dark">{{ post.title }}</a></td>
+              <td><a href="#anchor" class="text-dark">{{ post.title }}</a></td>
               <td class="text-center">{{ post.end.year }}-{{ post.end.month }}-{{ post.end.day }}</td>
               <td class="text-center">{{ post.authorFirst }} {{ post.authorLast }}</td>
               <td>
-                  <button type="button" name="button" class="btn btn-success btn-sm my-0" onclick="ajax({{ post.id }});">Check</button>
+                  <button type="button" name="button" class="btn btn-success btn-sm my-0">Check</button>
               </td>
             </tr>
             {% endfor %}
@@ -50,9 +50,40 @@ Woodstock Petitions | Index
         </table>
         <button type="button" name="button" class="btn btn-block btn-success mx-4 d-none d-lg-block" onclick="loadmore()">Load more</button>
 
+
+        <h4 class="text-left mt-4 mb-1 p-2 pl-3 font-weight-light text-danger animated fadeInDown d-none d-lg-block">Disapproved Petitions</h4>
+        <table class="table d-none d-lg-block mx-4 mt-3">
+          <thead>
+            <tr class="text-center">
+              <th scope="col" style="width: 5%;">#</th>
+              <th scope="col" style="width: 10%;">Category</th>
+              <th scope="col" style="width: 50%;">Title</th>
+              <th scope="col" style="width: 15%;">End date</th>
+              <th scope="col" style="width: 15%;">Author</th>
+              <th scope="col" style="width: 5%;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="disapproved">
+            {% for post in disapproved|slice:":2" %}
+            <tr class="table-tr" style="cursor:pointer;" onclick="ajax({{ post.id }});">
+              <th scope="row" class="text-muted">{{ post.id }}</th>
+              <td class="text-success">{{ post.category }}</td>
+              <td><a href="#anchor" class="text-dark">{{ post.title }}</a></td>
+              <td class="text-center">{{ post.end.year }}-{{ post.end.month }}-{{ post.end.day }}</td>
+              <td class="text-center">{{ post.authorFirst }} {{ post.authorLast }}</td>
+              <td>
+                  <button type="button" name="button" class="btn btn-success btn-sm my-0">Check</button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <button type="button" name="button" class="btn btn-block btn-success mx-4 d-none d-lg-block" onclick="disloadmore()">Load more</button>
+
+        <h4 class="text-left mt-2 mb-3 mx-2 font-weight-light animated fadeInDown d-block d-lg-none">Pending Petitions</h4>
         {% for post in yet %}
         <div class="card mb-3 shadow d-block d-lg-none"
-          onclick="window.location.href = '{% url 'post' post.id %}'" style="cursor: pointer;">
+          onclick="ajax({{ post.id }});" style="cursor: pointer;">
           <div class="card-body px-3">
             <p class="card-text text-success mb-1">{{ post.category }}</p>
             <p class="card-text mb-1">{{ post.title }}</p>
@@ -63,8 +94,9 @@ Woodstock Petitions | Index
           </div>
         </div>
         {% endfor %}
+
     </div>
-    <div class="col-12 col-lg-5">
+    <div class="col-12 col-lg-5" id="anchor">
         <div id="preview">
             <h4 class="d-block text-left mb-1 p-2 pl-3 font-weight-light animated fadeInDown"></h4>
         </div>
@@ -93,7 +125,7 @@ function ajax(id) {
       post = posts[0].fields
       console.log(post)
       $("#preview").html(
-        '<div class="shadow px-4 py-4 bg-light mx-4"><h4 class="d-block text-left mb-1 font-weight-light animated fadeInDown mb-3">#'+posts[0].pk+' <span class="f1 font-weight-bold">'+post.title+'</span> by '+post.authorFirst+' '+post.authorLast+'</h4>'+post.content+'<form action="/stuco" method="post">{% csrf_token %}<input type="hidden" name="stuco" value="{{ user.first_name }} {{ user.last_name }}"><input type="hidden" name="id" value="'+posts[0].pk+'"><button type="submit" class="btn btn-success btn-small mb-n3" name="state" value="1">Approve</button> <button type="submit" class="btn btn-danger btn-small mb-n3" name="state" value="6">Disapprove</button></form>'
+        '<div class="shadow px-4 py-4 bg-light mx-2"><h4 class="d-block text-left mb-1 font-weight-light animated fadeInDown mb-3">#'+posts[0].pk+' <span class="f1 font-weight-bold">'+post.title+'</span> by '+post.authorFirst+' '+post.authorLast+'</h4>'+post.content+'<form action="/stuco" method="post">{% csrf_token %}<input type="hidden" name="stuco" value="{{ user.first_name }} {{ user.last_name }}"><input type="hidden" name="id" value="'+posts[0].pk+'"><button type="submit" class="btn btn-success btn-small mb-n3" name="state" value="1">Approve</button> <button type="submit" class="btn btn-danger btn-small mb-n3" name="state" value="6">Disapprove</button></form>'
       );
     })
 };
@@ -117,7 +149,32 @@ function loadmore() {
           var posts = JSON.parse(rawdata[i])
           post = posts[0].fields
           $( "#pending" ).append(
-          '<tr class="table-tr" style="cursor:pointer;"><th scope="row" class="text-muted">'+posts[0].pk+'</th><td class="text-success">category</td><td><a href="" class="text-dark">'+post.title+'</a></td><td class="text-center">'+post.end+'</td><td class="text-center">'+post.authorFirst+' '+post.authorLast+'</td><td><button type="button" name="button" class="btn btn-success btn-sm my-0" onclick="ajax('+posts[0].pk+');">Check</button></td></tr>'
+          '<tr class="table-tr" style="cursor:pointer;" onclick="ajax('+posts[0].pk+');"><th scope="row" class="text-muted">'+posts[0].pk+'</th><td class="text-success">'+post.category+'</td><td><a href="#anchor" class="text-dark">'+post.title+'</a></td><td class="text-center">'+post.end+'</td><td class="text-center">'+post.authorFirst+' '+post.authorLast+'</td><td><button type="button" name="button" class="btn btn-success btn-sm my-0">Check</button></td></tr>'
+          );
+      }
+    })
+};
+
+var disshow = 0;
+function disloadmore() {
+    disshow = disshow + 1;
+    fetch("stuco/disloadmore", {
+    headers:{
+      'Accept': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest', //Necessary to work with request.is_ajax()
+      'show': disshow,
+    },
+    })
+    .then(response => {
+      return response.json();
+    })
+    .then(data => {
+      rawdata = data['show']
+      for (i = 0; i < rawdata.length; i++) {
+          var posts = JSON.parse(rawdata[i])
+          post = posts[0].fields
+          $( "#disapproved" ).append(
+          '<tr class="table-tr" style="cursor:pointer;" onclick="ajax('+posts[0].pk+');"><th scope="row" class="text-muted">'+posts[0].pk+'</th><td class="text-success">'+post.category+'</td><td><a href="#anchor" class="text-dark">'+post.title+'</a></td><td class="text-center">'+post.end+'</td><td class="text-center">'+post.authorFirst+' '+post.authorLast+'</td><td><button type="button" name="button" class="btn btn-success btn-sm my-0">Check</button></td></tr>'
           );
       }
     })

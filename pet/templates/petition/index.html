@@ -64,7 +64,7 @@ Woodstock Petitions | Index
       </tr>
     </thead>
     <tbody>
-      {% for post in posts|dictsortreversed:"num_supporters"|slice:":5" %}
+      {% for post in top %}
       <tr class="table-tr" onclick="window.location.href = '{% url 'post' post.id %}'" style="cursor:pointer;">
         <th scope="row" class="text-muted">{{ post.id }}</th>
         <td class="text-success">{{ post.category }}</td>
@@ -76,7 +76,7 @@ Woodstock Petitions | Index
     </tbody>
   </table>
 
-  {% for post in posts|dictsortreversed:"num_supporters"|slice:":5" %}
+  {% for post in top %}
   <div class="card mb-3 shadow d-block d-lg-none"
     onclick="window.location.href = '{% url 'post' post.id %}'" style="cursor: pointer;">
     <div class="card-body px-3">
@@ -98,16 +98,6 @@ Woodstock Petitions | Index
 
   <div class="row">
     <h4 class="d-block text-left mb-0 p-2 pl-3 font-weight-light animated fadeInDown">Recent Petitions</h4>
-    <div class="d-flex py-2">
-      <select class="custom-select custom-select-sm" id="select">
-        <option selected value="">All</option>
-        <option value="Policy">Policy</option>
-        <option value="Academic">Academic</option>
-        <option value="Food">Food</option>
-        <option value="Event">Event</option>
-        <option value="Other">Other</option>
-      </select>
-    </div>
     <!--<a href="{% url 'index' %}" class="d-block ml-auto mr-auto mr-lg-5 text-success text-right pt-3">See more</a>-->
   </div>
 
@@ -127,12 +117,19 @@ Woodstock Petitions | Index
         <th scope="row" class="text-muted">{{ post.id }}</th>
         <td class="text-success">{{ post.category }}</td>
         <td><a href="{% url 'post' post.id %}" class="text-dark">{{ post.title }}</a></td>
-        <td class="text-center">{{ post.end.day }}.{{ post.end.month }}.{{ post.end.year }}</td>
+        <td class="text-center">{{ post.end.year }}-{{ post.end.month }}-{{ post.end.day }}</td>
         <td class="text-center">{{ post.num_supporters }}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        {% for i in page %}
+        <li class="page-item"><a class="page-link" onclick="page({{ i }})" style="cursor: pointer">{{ i }}</a></li>
+        {% endfor %}
+      </ul>
+    </nav>
 
 <div id="recentCard">
   {% for post in posts %}
@@ -142,7 +139,7 @@ Woodstock Petitions | Index
       <p class="card-text text-success mb-1">{{ post.category }}</p>
       <p class="card-text mb-1">{{ post.title }}</p>
       <div class="d-flex justify-content-between">
-        <p class="card-text text-secondary my-0">{{ post.end.day }}.{{ post.end.month }}.{{ post.end.year }}</p>
+        <p class="card-text text-secondary my-0">{{ post.end }}</p>
         <a href="#" class="card-link text-success my-0">{{ post.num_supporters }} Signed</a>
       </div>
       <div class="progress mt-3 mb-n2">
@@ -157,16 +154,30 @@ Woodstock Petitions | Index
 
 </div>
 <script>
-$(document).ready(function(){
-  $("#select").on("change", function() {
-    var value = $(this).val().toLowerCase();
-    $("#recentCard #cardbody").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-    $("#recentTable tr").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-  });
-});
+function postClick(id){
+    window.location.href = 'petitions/'+id
+};
+function page(currentPage) {
+    fetch("indexPage", {
+    headers:{
+      'Accept': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest', //Necessary to work with request.is_ajax()
+      'page': currentPage,
+    },
+    })
+    .then(response => {
+      return response.json();
+    })
+    .then(data => {
+      rawdata = data['show']
+      $( "#recentTable" ).html ('');
+      for (i = 0; i < rawdata.length; i++) {
+          var posts = JSON.parse(rawdata[i])
+          post = posts[0].fields
+          $( "#recentTable" ).append(
+          '<tr class="table-tr" onclick="postClick('+posts[0].pk+')" style="cursor:pointer;"><th scope="row" class="text-muted">'+posts[0].pk+'</th><td class="text-success">'+post.category+'</td><td><a href="petitions/'+posts[0].pk+'" class="text-dark">'+post.title+'</a></td><td class="text-center">'+post.end+'</td><td class="text-center">'+posts[0].num+'</td></tr>');
+      }
+    })
+};
 </script>
 {% endblock %}
