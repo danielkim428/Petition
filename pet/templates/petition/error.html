@@ -1,9 +1,19 @@
 {% extends "petition/base.html" %}
 {% block body %}
-<h1>Errors</h1>
-{% if message %}
-    <div>
-        {{ message }}
+<div class="row mt-5">
+    <div class="col-12 col-lg-4 mx-auto">
+        <div class="card shadow rounded-0">
+          <div class="card-body">
+            <h4 class="card-title text-danger">Error</h4>
+            <p class="card-text">
+                    {% if message %}
+                        {{ message }}
+                    {% endif %}</p>
+            <a href="{% url 'index' %}" class="btn btn-dark btn-sm rounded-0">Go Home</a>
+          </div>
+        </div>
+        <h1></h1>
+
     </div>
-{% endif %}
+</div>
 {% endblock %}

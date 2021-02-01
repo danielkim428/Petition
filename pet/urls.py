@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     path("", views.index, name='index'),
     path("petitions/<int:post_id>", views.post, name='post'),
+    path("petitions/<int:post_id>/remove", views.remove, name='remove'),
     path("petitions/<int:post_id>/sign", views.sign, name="sign"),
     path("login", views.login_view, name="login"),
     path("logout", views.logout_view, name="logout"),
@@ -20,4 +21,6 @@ urlpatterns = [
     path("stuco/loadmore", views.loadmore, name="loadmore"),
     path("stuco/disloadmore", views.disloadmore, name="disloadmore"),
     path("indexPage", views.indexPage, name="indexPage"),
+    path("closed", views.closed, name="closed"),
+    path("answered", views.answered, name="answered"),
 ]

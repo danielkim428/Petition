@@ -9,31 +9,31 @@ Woodstock Petitions | Index
 
 <div class="image-background">
   <div class="bottom-left">
-    <h2>Woodstock Petitons</h2>
+    <h2>Petitons</h2>
   </div>
 </div>
 
 <div class="row border-bottom p-0 m-0" style="cursor: pointer;">
   <div class="col-4 tab text-center py-2 px-0 m-0 tab-active d-none d-lg-block"
     onclick="window.location.href = '{% url 'index' %}'">
-    <p class="my-2 border-right">Petitions by Categories</p>
+    <p class="my-2 border-right">Open Petitions</p>
   </div>
   <div class="col-4 tab text-center py-2 px-0 m-0 d-none d-lg-block"
-    onclick="window.location.href = '{% url 'index' %}'">
+    onclick="window.location.href = '{% url 'closed' %}'">
     <p class="my-2">Closed Petitions</p>
   </div>
   <div class="col-4 tab text-center py-2 px-0 m-0 d-none d-lg-block"
-    onclick="window.location.href = '{% url 'index' %}'">
+    onclick="window.location.href = '{% url 'answered' %}'">
     <p class="my-2 border-left">Answered Petitions</p>
   </div>
   <div class="col-4 tab text-center py-2 px-0 m-0 tab-active d-lg-none"
     onclick="window.location.href = '{% url 'index' %}'">
-    <p class="my-2 border-right">Categories</p>
+    <p class="my-2 border-right">Open</p>
   </div>
-  <div class="col-4 tab text-center py-2 px-0 m-0 d-lg-none" onclick="window.location.href = '{% url 'index' %}'">
+  <div class="col-4 tab text-center py-2 px-0 m-0 d-lg-none" onclick="window.location.href = '{% url 'closed' %}'">
     <p class="my-2">Closed</p>
   </div>
-  <div class="col-4 tab text-center py-2 px-0 m-0 d-lg-none" onclick="window.location.href = '{% url 'index' %}'">
+  <div class="col-4 tab text-center py-2 px-0 m-0 d-lg-none" onclick="window.location.href = '{% url 'answered' %}'">
     <p class="my-2 border-left">Answered</p>
   </div>
 </div>
@@ -69,7 +69,7 @@ Woodstock Petitions | Index
         <th scope="row" class="text-muted">{{ post.id }}</th>
         <td class="text-success">{{ post.category }}</td>
         <td><a href="{% url 'post' post.id %}" class="text-dark">{{ post.title }}</a></td>
-        <td class="text-center">{{ post.end.day }}.{{ post.end.month }}.{{ post.end.year }}</td>
+        <td class="text-center">{{ post.end.year }}-{{ post.end.month }}-{{ post.end.day }}</td>
         <td class="text-center">{{ post.num_supporters }}</td>
       </tr>
       {% endfor %}
@@ -83,13 +83,8 @@ Woodstock Petitions | Index
       <p class="card-text text-success mb-1">{{ post.category }}</p>
       <p class="card-text mb-1">{{ post.title }}</p>
       <div class="d-flex justify-content-between">
-        <p class="card-text text-secondary my-0">{{ post.end.day }}.{{ post.end.month }}.{{ post.end.year }}</p>
+        <p class="card-text text-secondary my-0">{{ post.end.year }}-{{ post.end.month }}-{{ post.end.day }}</p>
         <a href="#" class="card-link text-success my-0">{{ post.num_supporters }} Signed</a>
-      </div>
-      <div class="progress mt-3 mb-n2">
-          <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar"
-              style="width: {{ post.num_supporters }}%" aria-valuenow="{{ post.num_supporters }}"
-              aria-valuemin="0" aria-valuemax="100"></div>
       </div>
     </div>
   </div>
@@ -123,13 +118,6 @@ Woodstock Petitions | Index
       {% endfor %}
     </tbody>
   </table>
-    <nav aria-label="Page navigation example">
-      <ul class="pagination justify-content-center">
-        {% for i in page %}
-        <li class="page-item"><a class="page-link" onclick="page({{ i }})" style="cursor: pointer">{{ i }}</a></li>
-        {% endfor %}
-      </ul>
-    </nav>
 
 <div id="recentCard">
   {% for post in posts %}
@@ -139,19 +127,21 @@ Woodstock Petitions | Index
       <p class="card-text text-success mb-1">{{ post.category }}</p>
       <p class="card-text mb-1">{{ post.title }}</p>
       <div class="d-flex justify-content-between">
-        <p class="card-text text-secondary my-0">{{ post.end }}</p>
+        <p class="card-text text-secondary my-0">{{ post.end.year }}-{{ post.end.month }}-{{ post.end.day }}</p>
         <a href="#" class="card-link text-success my-0">{{ post.num_supporters }} Signed</a>
-      </div>
-      <div class="progress mt-3 mb-n2">
-          <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar"
-              style="width: {{ post.num_supporters }}%" aria-valuenow="{{ post.num_supporters }}"
-              aria-valuemin="0" aria-valuemax="100"></div>
       </div>
     </div>
   </div>
   {% endfor %}
 </div>
 
+<nav aria-label="Page navigation">
+  <ul class="pagination justify-content-center">
+    {% for i in page %}
+    <li class="page-item"><a class="page-link" onclick="page({{ i }})" style="cursor: pointer">{{ i }}</a></li>
+    {% endfor %}
+  </ul>
+</nav>
 </div>
 <script>
 function postClick(id){
@@ -161,7 +151,7 @@ function page(currentPage) {
     fetch("indexPage", {
     headers:{
       'Accept': 'application/json',
-      'X-Requested-With': 'XMLHttpRequest', //Necessary to work with request.is_ajax()
+      'X-Requested-With': 'XMLHttpRequest',
       'page': currentPage,
     },
     })
@@ -170,12 +160,15 @@ function page(currentPage) {
     })
     .then(data => {
       rawdata = data['show']
-      $( "#recentTable" ).html ('');
+      $( "#recentTable" ).html('');
+      $( "#recentCard" ).html('');
       for (i = 0; i < rawdata.length; i++) {
           var posts = JSON.parse(rawdata[i])
           post = posts[0].fields
           $( "#recentTable" ).append(
           '<tr class="table-tr" onclick="postClick('+posts[0].pk+')" style="cursor:pointer;"><th scope="row" class="text-muted">'+posts[0].pk+'</th><td class="text-success">'+post.category+'</td><td><a href="petitions/'+posts[0].pk+'" class="text-dark">'+post.title+'</a></td><td class="text-center">'+post.end+'</td><td class="text-center">'+posts[0].num+'</td></tr>');
+          $( "#recentCard" ).append(
+          '<div class="card mb-3 shadow d-lg-none" onclick="postClick('+posts[0].pk+')" style="cursor: pointer;" id="cardbody"><div class="card-body px-3"><p class="card-text text-success mb-1">'+post.category+'</p><p class="card-text mb-1">'+post.title+'</p><div class="d-flex justify-content-between"><p class="card-text text-secondary my-0">'+post.end+'</p><a href="#" class="card-link text-success my-0">'+posts[0].num+' Signed</a></div></div></div>');
       }
     })
 };

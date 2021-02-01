@@ -40,7 +40,7 @@ Woodstock Petitions | Index
               <td class="text-success">{{ post.category }}</td>
               <td><a href="#anchor" class="text-dark">{{ post.title }}</a></td>
               <td class="text-center">{{ post.end.year }}-{{ post.end.month }}-{{ post.end.day }}</td>
-              <td class="text-center">{{ post.authorFirst }} {{ post.authorLast }}</td>
+              <td class="text-center">{{ post.author.first_name }} {{ post.author.last_name }}</td>
               <td>
                   <button type="button" name="button" class="btn btn-success btn-sm my-0">Check</button>
               </td>
@@ -70,7 +70,7 @@ Woodstock Petitions | Index
               <td class="text-success">{{ post.category }}</td>
               <td><a href="#anchor" class="text-dark">{{ post.title }}</a></td>
               <td class="text-center">{{ post.end.year }}-{{ post.end.month }}-{{ post.end.day }}</td>
-              <td class="text-center">{{ post.authorFirst }} {{ post.authorLast }}</td>
+              <td class="text-center">{{ post.author.first_name }} {{ post.author.last_name }}</td>
               <td>
                   <button type="button" name="button" class="btn btn-success btn-sm my-0">Check</button>
               </td>
@@ -123,9 +123,8 @@ function ajax(id) {
       rawdata = data['post']
       var posts = JSON.parse(rawdata)
       post = posts[0].fields
-      console.log(post)
       $("#preview").html(
-        '<div class="shadow px-4 py-4 bg-light mx-2"><h4 class="d-block text-left mb-1 font-weight-light animated fadeInDown mb-3">#'+posts[0].pk+' <span class="f1 font-weight-bold">'+post.title+'</span> by '+post.authorFirst+' '+post.authorLast+'</h4>'+post.content+'<form action="/stuco" method="post">{% csrf_token %}<input type="hidden" name="stuco" value="{{ user.first_name }} {{ user.last_name }}"><input type="hidden" name="id" value="'+posts[0].pk+'"><button type="submit" class="btn btn-success btn-small mb-n3" name="state" value="1">Approve</button> <button type="submit" class="btn btn-danger btn-small mb-n3" name="state" value="6">Disapprove</button></form>'
+        '<div class="shadow px-4 py-4 bg-light mx-2"><h4 class="d-block text-left mb-1 font-weight-light animated fadeInDown mb-3">#'+posts[0].pk+' <span class="f1 font-weight-bold">'+post.title+'</span> by '+post.firstname+' '+post.lastname+'</h4>'+post.content+'<form action="/stuco" method="post">{% csrf_token %}<input type="hidden" name="id" value="'+posts[0].pk+'"><button type="submit" class="btn btn-success btn-small mb-n3" name="state" value="1">Approve</button> <button type="submit" class="btn btn-danger btn-small mb-n3" name="state" value="6">Disapprove</button></form>'
       );
     })
 };
@@ -149,7 +148,7 @@ function loadmore() {
           var posts = JSON.parse(rawdata[i])
           post = posts[0].fields
           $( "#pending" ).append(
-          '<tr class="table-tr" style="cursor:pointer;" onclick="ajax('+posts[0].pk+');"><th scope="row" class="text-muted">'+posts[0].pk+'</th><td class="text-success">'+post.category+'</td><td><a href="#anchor" class="text-dark">'+post.title+'</a></td><td class="text-center">'+post.end+'</td><td class="text-center">'+post.authorFirst+' '+post.authorLast+'</td><td><button type="button" name="button" class="btn btn-success btn-sm my-0">Check</button></td></tr>'
+          '<tr class="table-tr" style="cursor:pointer;" onclick="ajax('+posts[0].pk+');"><th scope="row" class="text-muted">'+posts[0].pk+'</th><td class="text-success">'+post.category+'</td><td><a href="#anchor" class="text-dark">'+post.title+'</a></td><td class="text-center">'+post.end+'</td><td class="text-center">'+post.firstname+' '+post.lastname+'</td><td><button type="button" name="button" class="btn btn-success btn-sm my-0">Check</button></td></tr>'
           );
       }
     })
@@ -174,7 +173,7 @@ function disloadmore() {
           var posts = JSON.parse(rawdata[i])
           post = posts[0].fields
           $( "#disapproved" ).append(
-          '<tr class="table-tr" style="cursor:pointer;" onclick="ajax('+posts[0].pk+');"><th scope="row" class="text-muted">'+posts[0].pk+'</th><td class="text-success">'+post.category+'</td><td><a href="#anchor" class="text-dark">'+post.title+'</a></td><td class="text-center">'+post.end+'</td><td class="text-center">'+post.authorFirst+' '+post.authorLast+'</td><td><button type="button" name="button" class="btn btn-success btn-sm my-0">Check</button></td></tr>'
+          '<tr class="table-tr" style="cursor:pointer;" onclick="ajax('+posts[0].pk+');"><th scope="row" class="text-muted">'+posts[0].pk+'</th><td class="text-success">'+post.category+'</td><td><a href="#anchor" class="text-dark">'+post.title+'</a></td><td class="text-center">'+post.end+'</td><td class="text-center">'+post.firstname+' '+post.lastname+'</td><td><button type="button" name="button" class="btn btn-success btn-sm my-0">Check</button></td></tr>'
           );
       }
     })

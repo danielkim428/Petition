@@ -1,0 +1,98 @@
+{% extends "petition/base.html" %}
+{% load static %}
+
+{% block title %}
+Woodstock Petitions | Answered Petitions
+{% endblock %}
+
+{% block body %}
+
+<div class="image-background">
+  <div class="bottom-left">
+    <h2>Petitons</h2>
+  </div>
+</div>
+
+<div class="row border-bottom p-0 m-0" style="cursor: pointer;">
+  <div class="col-4 tab text-center py-2 px-0 m-0 d-none d-lg-block"
+    onclick="window.location.href = '{% url 'index' %}'">
+    <p class="my-2 border-right">Open Petitions</p>
+  </div>
+  <div class="col-4 tab text-center py-2 px-0 m-0 d-none d-lg-block"
+    onclick="window.location.href = '{% url 'closed' %}'">
+    <p class="my-2">Closed Petitions</p>
+  </div>
+  <div class="col-4 tab text-center py-2 px-0 m-0 tab-active d-none d-lg-block"
+    onclick="window.location.href = '{% url 'answered' %}'">
+    <p class="my-2 border-left">Answered Petitions</p>
+  </div>
+  <div class="col-4 tab text-center py-2 px-0 m-0 d-lg-none"
+    onclick="window.location.href = '{% url 'index' %}'">
+    <p class="my-2 border-right">Open</p>
+  </div>
+  <div class="col-4 tab text-center py-2 px-0 m-0 d-lg-none" onclick="window.location.href = '{% url 'closed' %}'">
+    <p class="my-2">Closed</p>
+  </div>
+  <div class="col-4 tab text-center py-2 px-0 m-0 tab-active d-lg-none" onclick="window.location.href = '{% url 'answered' %}'">
+    <p class="my-2 border-left">Answered</p>
+  </div>
+</div>
+
+
+<div class="container py-3">
+  <div class="row">
+    <h4 class="d-block text-left mb-1 p-2 pl-3 font-weight-light animated fadeInDown">Answered Petitions</h4>
+  </div>
+  {% for post in posts %}
+  <div class="card mb-3 shadow" style="cursor: pointer;">
+    <div class="card-body px-3" onclick="window.location.href = '{% url 'post' post.id %}'">
+      <p class="card-text text-success mb-1">{{ post.category }}</p>
+      <p class="card-text mb-1">{{ post.title }}</p>
+      <div class="d-flex justify-content-between">
+        <p class="card-text text-secondary my-0">{{ post.end.year }}-{{ post.end.month }}-{{ post.end.day }}</p>
+        <a href="#" class="card-link text-success my-0">{{ post.num_supporters }} Signed</a>
+      </div>
+    </div>
+    <div class="card-footer text-muted {% if post.answer %}bg-white{% else %}bg-light{% endif %} pt-4">
+    {% if post.answer %}
+        {{ post.answer|safe }}
+    {% else %}
+    Waiting for response from STUCO...
+        {% if request.user.is_staff %}
+        <p class="text-danger mb-0" current="inactive" onclick="answer(this)" pk="{{ post.pk }}">Answer this petition</p>
+        <div class="answerArea">
+        </div>
+        {% endif %}
+    {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<script>
+    function answer(e) {
+        console.log("hi");
+        tinymce.remove(".replyArea");
+        $('.replyForm').remove();
+        if ($(e).attr("current") == "inactive") {
+            e.setAttribute("current", "active");
+            $(".reply").not(e).each(function(){
+               $(this).attr('current', 'inactive');
+            });
+            $('<div class="replyForm mt-2"><form class="mb-3" action="" method="post">{% csrf_token %}<input type="hidden" name="pk" value="'+$(e).attr("pk")+'"><textarea id="reply" class="replyArea" name="content"></textarea><button type="submit" class="btn btn-dark f2 mt-3 rounded-0 btn shadow">Answer</button></form></div>').insertAfter(e);
+            tinymce.init({
+              selector: '.replyArea',
+              statusbar: false,
+              height: 160,
+              menubar: false,
+              plugins: [
+                'autolink',
+              ],
+              toolbar: 'bold italic backcolor',
+            });
+        } else {
+            e.setAttribute("current", "inactive");
+            $(e).next("div.replyForm").remove();
+        };
+    };
+</script>
+{% endblock %}

@@ -8,31 +8,31 @@ Woodstock Petitions | #{{ post.id }} {{ post.title }}
 {% block body %}
 <div class="image-background">
     <div class="bottom-left">
-        <h2>Woodstock Petitons</h2>
+        <h2>Petitons</h2>
     </div>
 </div>
 
 <div class="row border-bottom p-0 m-0" style="cursor: pointer;">
     <div class="col-4 tab text-center py-2 px-0 m-0 d-none d-lg-block"
         onclick="window.location.href = '{% url 'index' %}'">
-        <p class="my-2 border-right">Petitions by Categories</p>
+        <p class="my-2 border-right">Open Petitions</p>
     </div>
     <div class="col-4 tab text-center py-2 px-0 m-0 d-none d-lg-block"
-        onclick="window.location.href = '{% url 'index' %}'">
+        onclick="window.location.href = '{% url 'closed' %}'">
         <p class="my-2">Closed Petitions</p>
     </div>
     <div class="col-4 tab text-center py-2 px-0 m-0 d-none d-lg-block"
-        onclick="window.location.href = '{% url 'index' %}'">
+        onclick="window.location.href = '{% url 'answered' %}'">
         <p class="my-2 border-left">Answered Petitions</p>
     </div>
     <div class="col-4 tab text-center py-2 px-0 m-0 tab-active d-lg-none"
         onclick="window.location.href = '{% url 'index' %}'">
-        <p class="my-2 border-right">Categories</p>
+        <p class="my-2 border-right">Open</p>
     </div>
-    <div class="col-4 tab text-center py-2 px-0 m-0 d-lg-none" onclick="window.location.href = '{% url 'index' %}'">
+    <div class="col-4 tab text-center py-2 px-0 m-0 d-lg-none" onclick="window.location.href = '{% url 'closed' %}'">
         <p class="my-2">Closed</p>
     </div>
-    <div class="col-4 tab text-center py-2 px-0 m-0 d-lg-none" onclick="window.location.href = '{% url 'index' %}'">
+    <div class="col-4 tab text-center py-2 px-0 m-0 d-lg-none" onclick="window.location.href = '{% url 'answered' %}'">
         <p class="my-2 border-left">Answered</p>
     </div>
 </div>
@@ -59,11 +59,67 @@ Woodstock Petitions | #{{ post.id }} {{ post.title }}
                         <p><b>End Date</b> {{ post.end.day }}.{{ post.end.month }}.{{ post.end.year }}</p>
                     </small></div>
                 <div class="col-6 col-lg-3 mt-0 mt-lg-3 text-center"><small>
-                        <p><b>Author</b> {{ post.authorFirst }} {{ post.authorLast }}</p>
+                        <p><b>Author</b> {{ post.author.first_name }} {{ post.author.last_name }}</p>
                     </small></div>
             </div>
             <hr>
-            <div class="mt-4">{{ post.content|safe  }}</div>
+            <div class="mt-4 content mb-5">{{ post.content|safe }}</div>
+            <hr>
+            <div class="row px-0 mb-5 mt-4">
+                <div class="col-12" id="comment">
+                    <h3 class="f2">Comments</h3>
+                    <form class="mt-3" action="" method="POST">
+                        {% csrf_token %}
+                        <p class="text-danger f3">{{ message }}</p>
+                        <input type="hidden" name="type" value="comment">
+                        <textarea id="commentBox" name="content">
+                        </textarea>
+                        <button type="submit" class="btn btn-dark f2 mt-3 rounded-0 btn-lg shadow">Submit</button>
+                    </form>
+                    <hr class="my-4">
+                    {% for c in comments %}
+                    <div class="commentSection">
+                        <div class="d-flex f3">
+                            <h6 class="font-weight-bold">{{ c.author.first_name }} {{ c.author.last_name }}</h6>
+                            <h6 class="ml-2">{{ c.date }}</h6>
+                        </div>
+                        <div class="commentContent f2 px-3">
+                            {{ c.content|safe }}
+                            <p class="reply" current="inactive" parent="{{ c.pk }}" onclick="reply(this)">Reply <i class="fas fa-reply fa-sm"></i></p>
+
+                            {% if c.reply_of %}
+                                {% for r in c.reply_of.all %}
+                                <div class="commentSection">
+                                    <div class="d-flex f3">
+                                        <h6 class="font-weight-bold">{{ r.author.first_name }} {{ r.author.last_name }}</h6>
+                                        <h6 class="ml-2">{{ r.date }}</h6>
+                                    </div>
+                                    <div class="commentContent f2 px-3">
+                                        {{ r.content|safe }}
+                                        <p class="reply" current="inactive" parent="{{ r.pk }}" onclick="reply(this)">Reply <i class="fas fa-reply fa-sm"></i></p>
+
+                                        {% if r.reply_of %}
+                                            {% for l in r.reply_of.all %}
+                                            <div class="commentSection">
+                                                <div class="d-flex f3">
+                                                    <h6 class="font-weight-bold">{{ l.author.first_name }} {{ l.author.last_name }}</h6>
+                                                    <h6 class="ml-2">{{ l.date }}</h6>
+                                                </div>
+                                                <div class="commentContent f2 px-3">
+                                                    {{ l.content|safe }}
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
         <div class="col-12 col-lg-4 border rounded-right">
             <div class="text-left mt-4">
@@ -100,7 +156,7 @@ Woodstock Petitions | #{{ post.id }} {{ post.title }}
             <div>
                 <p class="mb-2"><b>Top 5 Petitions</b></p>
                 <ol>
-                    {% for post in posts|dictsortreversed:"num_supporters"|slice:":5" %}
+                    {% for post in top|slice:":5" %}
                     <li><a href="{% url 'post' post.id %}" class="text-dark">{{ post.title|truncatewords:4 }}</a></li>
                     {% endfor %}
                 </ol>
@@ -122,7 +178,7 @@ Woodstock Petitions | #{{ post.id }} {{ post.title }}
                 <p>This decision was made by {{ post.stuco }}</p>
                 {% endif %}
                 {% if post.state == 1 or post.state == 2 %}
-                <form action="{% url 'post' post.id %}" method="post">
+                <form action="{% url 'remove' post.id %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="id" value="{{ post.id }}">
                     <button type="submit" name="button" class="btn btn-danger btn-block">Remove</button>
@@ -135,16 +191,55 @@ Woodstock Petitions | #{{ post.id }} {{ post.title }}
 </div>
 
 <script type="text/javascript">
-$(document).scroll(function() {
-    checkOffset();
-});
+    tinymce.init({
+      mode : "textareas",
+      statusbar: false,
+      height: 160,
+      menubar: false,
+      plugins: [
+        'autolink',
+      ],
+      toolbar: 'bold italic backcolor',
+    });
+    $(document).scroll(function() {
+        checkOffset();
+    });
 
-function checkOffset() {
-    if ($('#btnsubmit').offset().top + $('#btnsubmit').height() >= $('#theform').offset().top - 10)
-        $('#btnsubmit').css('position', 'relative');
-    if ($(document).scrollTop() + window.innerHeight < $('#theform').offset().top)
-        $('#btnsubmit').css('position', 'fixed');
-};
+    function checkOffset() {
+        if ($('#btnsubmit').offset().top + $('#btnsubmit').height() >= $('#theform').offset().top - 10)
+            $('#btnsubmit').css('position', 'relative');
+        if ($(document).scrollTop() + window.innerHeight < $('#theform').offset().top)
+            $('#btnsubmit').css('position', 'fixed');
+    };
+    function reply(e) {
+        tinymce.remove(".replyArea");
+        $('.replyForm').remove();
+        if ($(e).attr("current") == "inactive") {
+            e.setAttribute("current", "active");
+            $(".reply").not(e).each(function(){
+               $(this).attr('current', 'inactive');
+            });
+            $('<div class="commentContent replyForm px-3"><form class="mb-3" action=""\
+            method="POST">{% csrf_token %}<input type="hidden" name="type" value="reply">\
+            <input type="hidden" name="parent" value="'+$(e).attr("parent")+'">\
+            <textarea id="reply" class="replyArea" name="content"></textarea>\
+            <button type="submit" class="btn btn-dark f2 mt-3 rounded-0 btn shadow">Reply</button>\
+            </form></div>').insertAfter(e);
+            tinymce.init({
+              selector: '.replyArea',
+              statusbar: false,
+              height: 160,
+              menubar: false,
+              plugins: [
+                'autolink',
+              ],
+              toolbar: 'bold italic backcolor',
+            });
+        } else {
+            e.setAttribute("current", "inactive");
+            $(e).next("div.replyForm").remove();
+        };
+    };
 </script>
 
 {% endblock %}

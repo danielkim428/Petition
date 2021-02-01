@@ -1,0 +1,74 @@
+{% extends "petition/base.html" %}
+{% load static %}
+
+{% block title %}
+Woodstock Petitions | Closed Petitions
+{% endblock %}
+
+{% block body %}
+
+<div class="image-background">
+  <div class="bottom-left">
+    <h2>Petitons</h2>
+  </div>
+</div>
+
+<div class="row border-bottom p-0 m-0" style="cursor: pointer;">
+  <div class="col-4 tab text-center py-2 px-0 m-0 d-none d-lg-block"
+    onclick="window.location.href = '{% url 'index' %}'">
+    <p class="my-2 border-right">Open Petitions</p>
+  </div>
+  <div class="col-4 tab text-center py-2 px-0 m-0 tab-active d-none d-lg-block"
+    onclick="window.location.href = '{% url 'closed' %}'">
+    <p class="my-2">Closed Petitions</p>
+  </div>
+  <div class="col-4 tab text-center py-2 px-0 m-0 d-none d-lg-block"
+    onclick="window.location.href = '{% url 'answered' %}'">
+    <p class="my-2 border-left">Answered Petitions</p>
+  </div>
+  <div class="col-4 tab text-center py-2 px-0 m-0 d-lg-none"
+    onclick="window.location.href = '{% url 'index' %}'">
+    <p class="my-2 border-right">Open</p>
+  </div>
+  <div class="col-4 tab text-center py-2 px-0 m-0 tab-active d-lg-none" onclick="window.location.href = '{% url 'closed' %}'">
+    <p class="my-2">Closed</p>
+  </div>
+  <div class="col-4 tab text-center py-2 px-0 m-0 d-lg-none" onclick="window.location.href = '{% url 'answered' %}'">
+    <p class="my-2 border-left">Answered</p>
+  </div>
+</div>
+
+
+<div class="container py-3">
+  <div class="row">
+    <h4 class="d-block text-left mb-1 p-2 pl-3 font-weight-light animated fadeInDown">Closed Petitions</h4>
+  </div>
+  <table class="table">
+    <thead>
+      <tr class="text-center">
+        <th scope="col" style="width: 5%">#</th>
+        <th scope="col" style="width: 10%">Category</th>
+        <th scope="col" style="width: 60%">Title</th>
+        <th scope="col" style="width: 15%">End date</th>
+        <th scope="col" style="width: 10%">Supporters</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for post in posts %}
+      <tr class="table-tr" onclick="window.location.href = '{% url 'post' post.id %}'" style="cursor:pointer;">
+        <th scope="row" class="text-muted">{{ post.id }}</th>
+        <td class="text-success">{{ post.category }}</td>
+        <td><a href="{% url 'post' post.id %}" class="text-dark">{{ post.title }}</a></td>
+        <td class="text-center">{{ post.end.year }}-{{ post.end.month }}-{{ post.end.day }}</td>
+        <td class="text-center">{{ post.num_supporters }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<script>
+function postClick(id){
+    window.location.href = 'petitions/'+id
+};
+</script>
+{% endblock %}

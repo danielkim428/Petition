@@ -4,21 +4,9 @@ Woodstock Petitions | New Petition
 {% endblock %}
 
 {% block body %}
-<script>
-    $(document).ready(function () {
-        ClassicEditor
-            .create(document.querySelector('#content'), {
-                toolbar: ['bold', 'italic', '|', 'bulletedList', 'numberedList', '|', 'link'],
-            })
-            .catch(error => {
-                console.log(error);
-            })
-    });
-</script>
-
 <div class="image-background">
     <div class="bottom-left">
-        <h2>Woodstock Petitons</h2>
+        <h2>Petitons</h2>
     </div>
 </div>
 
@@ -83,17 +71,31 @@ Woodstock Petitions | New Petition
             </div>
             <div class="form-group mt-3">
                 <label for="content">Petition Content</label>
-                <textarea class="form-control ck-editor__editable" name="content" id="content" name="content" aria-describedby="contentHelp"
+                <textarea class="content" name="content" id="contentEditor" aria-describedby="contentHelp"
                     placeholder="What do you want to achieve?" required>
                 </textarea>
                 <small id="contentHelp" class="form-text text-muted">Explain the problem you want to solve</small>
             </div>
-            <input type="hidden" id="first" name="first" value="{{ user.first_name }}">
-            <input type="hidden" id="last" name="last" value="{{ user.last_name }}">
             <button class="btn btn-sm btn-success btn-block mt-4 py-2 border-0" type="submit" name="button">Create
                 petition</button>
         </form>
     </div>
-
 </div>
+<script>
+    tinymce.init({
+      selector: 'textarea#contentEditor',
+      height: 500,
+      menubar: false,
+      plugins: [
+        'advlist autolink lists link image charmap print preview anchor',
+        'searchreplace visualblocks code fullscreen',
+        'insertdatetime media table paste code help wordcount'
+      ],
+      toolbar: 'undo redo | formatselect | ' +
+      'bold italic forecolor backcolor | alignleft aligncenter ' +
+      'alignright alignjustify | bullist numlist outdent indent | ' +
+      'removeformat',
+      content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+    });
+</script>
 {% endblock %}
